@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Art of Living | An Editorial Anthology</title>
+    
+    <!-- Premium Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Plus+Jakarta+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- Organic Design System --- */
+        :root {
+            --bg-cream: #faf7f2;
+            --text-main: #2d2a26;
+            --text-muted: #6b6660;
+            --olive-earth: #4d5345;
+            --warm-clay: #b27a61;
+            --border-soft: rgba(77, 83, 69, 0.15);
+            --font-serif: 'Playfair Display', Georgia, serif;
+            --font-sans: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-cream);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            font-weight: 300;
+            line-height: 1.8;
+            overflow-x: hidden;
+            background-image: radial-gradient(rgba(45,42,38,0.015) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+
+        .container {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* --- Minimalist Fixed Navigation Taskbar --- */
+        .taskbar-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(250, 247, 242, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-soft);
+            z-index: 1000;
+        }
+
+        .taskbar {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            font-family: var(--font-serif);
+            font-size: 1.2rem;
+            font-style: italic;
+            cursor: pointer;
+            color: var(--text-main);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .nav-item {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.3s ease;
+            position: relative;
+            padding-bottom: 4px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: var(--warm-clay);
+        }
+
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background-color: var(--warm-clay);
+        }
+
+        /* --- Page State Architecture --- */
+        .page {
+            display: none;
+            padding-top: 140px;
+            padding-bottom: 80px;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .page.active-view {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- Editorial Layout Patterns --- */
+        .editorial-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 60px;
+            align-items: center;
+        }
+
+        .text-side {
+            grid-column: span 6;
+        }
+
+        .image-side {
+            grid-column: span 6;
+            position: relative;
+        }
+
+        /* --- Filmy Polaroid Styling --- */
+        .polaroid-frame {
+            background: #ffffff;
+            padding: 20px 20px 60px 20px;
+            box-shadow: 0 15px 45px rgba(45,42,38,0.06);
+            border: 1px solid rgba(0,0,0,0.01);
+            transform: rotate(-1deg);
+        }
+
+        .film-photo {
+            width: 100%;
+            height: 480px;
+            background-size: cover;
+            background-position: center;
+            filter: sepia(0.1) contrast(0.95) saturate(0.95);
+            position: relative;
+        }
+
+        .film-photo::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(235, 190, 140, 0.1), transparent 70%);
+            pointer-events: none;
+        }
+
+        /* --- Typography & Accents --- */
+        .lily-accent {
+            color: var(--warm-clay);
+            margin-bottom: 16px;
+            opacity: 0.8;
+        }
+
+        .page-title {
+            font-family: var(--font-serif);
+            font-size: clamp(2.5rem, 5vw, 3.8rem);
+            font-weight: 400;
+            line-height: 1.15;
+            color: var(--text-main);
+            margin-bottom: 24px;
+        }
+
+        .page-title em {
+            font-style: italic;
+            color: var(--olive-earth);
+        }
+
+        .description {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 36px;
+            max-width: 500px;
+        }
+
+        /* --- Interactive Outlined Buttons --- */
+        .btn-editorial {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--text-main);
+            padding: 14px 32px;
+            font-family: var(--font-sans);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-editorial:hover {
+            background: var(--text-main);
+            color: var(--bg-cream);
+        }
+
+        .btn-editorial svg {
+            width: 16px;
+            height: 16px;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-editorial:hover svg {
+            transform: translateX(4px);
+        }
+
+        /* --- Dynamic Interactive Elements --- */
+        .interactive-box {
+            background: white;
+            border: 1px solid var(--border-soft);
+            padding: 40px;
+            margin-top: 40px;
+            border-radius: 2px;
+        }
+
+        #doodleCanvas {
+            background: var(--bg-cream);
+            border: 1px solid var(--border-soft);
+            cursor: crosshair;
+            touch-action: none;
+            display: block;
+            margin: 24px auto;
+            max-width: 100%;
+        }
+
+        .poem-layout {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-size: 1.4rem;
+            line-height: 2.2;
+            text-align: center;
+            color: var(--olive-earth);
+            padding: 20px 0;
+        }
+
+        /* --- Footer --- */
+        footer {
+            margin-top: 100px;
+            padding: 30px 0;
+            border-top: 1px solid var(--border-soft);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* --- Responsive Structure --- */
+        @media(max-width: 992px) {
+            .text-side, .image-side { grid-column: span 12; }
+            .image-side { order: -1; }
+            .film-photo { height: 340px; }
+            .nav-links { display: none; } /* Simplified mobile handling */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Taskbar Navigation -->
+    <div class="taskbar-wrapper">
+        <nav class="taskbar">
+            <div class="brand" onclick="switchPage('home')">
+                <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9s2.015-9 4.5-9" /></svg>
+                <span>m.h. anthology</span>
+            </div>
+            <div class="nav-links">
+                <span class="nav-item active" data-page="home" onclick="switchPage('home')">Home</span>
+                <span class="nav-item" data-page="performance" onclick="switchPage('performance')">Performance</span>
+                <span class="nav-item" data-page="cinema" onclick="switchPage('cinema')">Cinema</span>
+                <span class="nav-item" data-page="literature" onclick="switchPage('literature')">Literature</span>
+                <span class="nav-item" data-page="studio" onclick="switchPage('studio')">Studio</span>
+                <span class="nav-item" data-page="water" onclick="switchPage('water')">Water</span>
+            </div>
+        </nav>
+    </div>
+
+    <div class="container">
+
+        <!-- ================= PAGE: HOME ================= -->
+        <section id="home" class="page active-view">
+            <div class="editorial-grid">
+                <div class="text-side">
+                    <div class="lily-accent">
+                        <svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3" /></svg>
+                    </div>
+                    <h1 class="page-title">Curated collections of a <em>creative mind</em>.</h1>
+                    <p class="description">Welcome to a tactile scrapbook documenting intentional pastimes, daily rhythms, dark literature, and fine artistic expression.</p>
+                    <button class="btn-editorial" onclick="switchPage('performance')">
+                        <span>Enter Anthology</span>
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    </button>
+                </div>
+                <div class="image-side">
+                    <div class="polaroid-frame">
+                        <div class="film-photo" style="background-image: url('https://images.unsplash.com/photo-1459411559444-8b5fe18746a6?auto=format&fit=crop&q=80&w=800');"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE: PERFORMANCE (DANCING & SINGING) ================= -->
+        <section id="performance" class="page">
+            <div class="editorial-grid">
+                <div class="text-side">
+                    <h1 class="page-title">01 / The Unpolished <em>Melody</em></h1>
+                    <p class="description">Moving freely to raw beats allows the fast world to completely slow down. As for singing? My voice misses the register completely—persistently out of key and beautifully bad. Yet, I sing out loud anyway. It is an uncalculated cinematic release of pure joy.</p>
+                    <button class="btn-editorial" onclick="alert('Playing soundtrack preset: Golden Hour Acoustics')">
+                        <span>Listen to the Vibe</span>
+                    </button>
+                </div>
+                <div class="image-side">
+                    <div class="polaroid-frame" style="transform: rotate(1deg);">
+                        <div class="film-photo" style="background-image: url('https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&q=80&w=800');"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE: CINEMA (DOCUMENTARIES) ================= -->
+        <section id="cinema" class="page">
+            <div class="editorial-grid">
+                <div class="text-side">
+                    <h1 class="page-title">02 / Archival <em>Realism</em></h1>
+                    <p class="description">Sinking into historical film prints, ecological studies, and hidden testimonies. Documentaries act as a beautiful, high-contrast lens looking into micro-realities, allowing us to absorb fragments of the real world at a slower pace.</p>
+                    <button class="btn-editorial" onclick="alert('Opening Archive Log: 14 Recommended Slow-Living Docs')">
+                        <span>View Curated Watchlist</span>
+                    </button>
+                </div>
+                <div class="image-side">
+                    <div class="polaroid-frame">
+                        <div class="film-photo" style="background-image: url('https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&q=80&w=800');"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE: LITERATURE (TWISTED SERIES & POEMS) ================= -->
+        <section id="literature" class="page">
+            <div class="editorial-grid">
+                <div class="text-side">
+                    <h1 class="page-title">03 / Dark Prose & <em>Ink Stains</em></h1>
+                    <p class="description">Stepping away from reality into the addictive, high-stakes romance universes written by Ana Huang. The intense devotion, sharp character choices, and dark atmosphere running through the <i>Twisted</i> series offer a complete escape. When the world is still, I channel those emotions back onto paper.</p>
+                    <button class="btn-editorial" id="revealPoemBtn">
+                        <span>Read Original Verses</span>
+                    </button>
+                    
+                    <div class="interactive-box" id="poemBox" style="display: none;">
+                        <div class="poem-layout">
+                            "Still waters hold the changing sky,<br>
+                            Lines of graphite stretch and fade,<br>
+                            We build our walls where stories lie,<br>
+                            Safe within the worlds we made."
+                        </div>
+                    </div>
+                </div>
+                <div class="image-side">
+                    <div class="polaroid-frame" style="transform: rotate(-1.5deg);">
+                        <div class="film-photo" style="background-image: url('https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=800');"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE: STUDIO (DOODLING) ================= -->
+        <section id="studio" class="page">
+            <div class="interactive-box" style="text-align: center;">
+                <h1 class="page-title">04 / Continuous Line <em>Doodles</em></h1>
+                <p class="description" style="margin: 0 auto 24px;">Express raw thoughts or track down a loose, simple contour of a lily blossom onto our organic workshop paper space below.</p>
+                
+                <canvas id="doodleCanvas" width="700" height="340"></canvas>
+                
+                <button class="btn-editorial" id="clearCanvasBtn">Reset Surface</button>
+            </div>
+        </section>
+
+        <!-- ================= PAGE: WATER (SWIMMING) ================= -->
+        <section id="water" class="page">
+            <div class="editorial-grid">
+                <div class="text-side">
+                    <h1 class="page-title">05 / Subsurface <em>Stillness</em></h1>
+                    <p class="description">Sinking down underneath the water level where everyday sound completely vanishes. Swimming acts as a fluid meditation: uniform weights, rhythmic strokes, and deep, singular breathing patterns away from the noise of the land.</p>
+                    <button class="btn-editorial" onclick="alert('Current water temperature logged at: 21°C')">
+                        <span>Check Pool Log</span>
+                    </button>
+                </div>
+                <div class="image-side">
+                    <div class="polaroid-frame">
+                        <div class="film-photo" style="background-image: url('https://images.unsplash.com/photo-1519638831568-d9897f54ed69?auto=format&fit=crop&q=80&w=800');"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <div>© 2026 Studio Anthology. All Rights Reserved.</div>
+            <div style="font-style: italic; font-family: var(--font-serif);">Living with intention.</div>
+        </footer>
+    </div>
+
+    <!-- Page Engine & Interactive Scripting -->
+    <script>
+        /* --- SPA View Switcher Engine --- */
+        function switchPage(pageId) {
+            // Remove active classes everywhere
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active-view');
+            });
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Trigger animations on targeted section
+            const targetPage = document.getElementById(pageId);
+            targetPage.classList.add('active-view');
+
+            // Set active status on matching taskbar item
+            const activeNav = document.querySelector(`.nav-item[data-page="${pageId}"]`);
+            if(activeNav) activeNav.classList.add('active');
+
+            // Scroll safely back to top smoothly
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /* --- Poem Interactivity --- */
+        document.getElementById('revealPoemBtn').addEventListener('click', function() {
+            const poemBox = document.getElementById('poemBox');
+            if (poemBox.style.display === 'none') {
+                poemBox.style.display = 'block';
+                this.querySelector('span').innerText = 'Hide Verses';
+            } else {
+                poemBox.style.display = 'none';
+                this.querySelector('span').innerText = 'Read Original Verses';
+            }
+        });
+
+        /* --- Artisan Canvas Engine --- */
+        const canvas = document.getElementById('doodleCanvas');
+        const ctx = canvas.getContext('2d');
+        const clearBtn = document.getElementById('clearCanvasBtn');
+        let drawing = false;
+
+        ctx.strokeStyle = "#383430"; 
+        ctx.lineWidth = 1.6;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+
+        function startPosition(e) {
+            drawing = true;
+            draw(e);
+        }
+
+        function endPosition() {
+            drawing = false;
+            ctx.beginPath();
+        }
+
+        function draw(e) {
+            if (!drawing) return;
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            
+            const x = (clientX - rect.left) * (canvas.width / rect.width);
+            const y = (clientY - rect.top) * (canvas.height / rect.height);
+
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+
+        canvas.addEventListener('mousedown', startPosition);
+        canvas.addEventListener('mouseup', endPosition);
+        canvas.addEventListener('mousemove', draw);
+
+        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startPosition(e); });
+        canvas.addEventListener('touchend', endPosition);
+        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); });
+
+        clearBtn.addEventListener('click', () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+    </script>
+</body>
+</html>
